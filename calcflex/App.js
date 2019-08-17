@@ -13,9 +13,31 @@ export default class App extends React.Component {
   }
 
   handleOp(op){
-    this.setState({ 
-      display: this.state.display + op 
-    })
+    if(op === 'C' ){
+      this.setState({ 
+        display: '',
+        result: ''
+      }) 
+    }else if(op === '='){
+      this.setState({
+        display: this.state.result,
+        result: ''
+      })
+    }else{
+      const display = this.state.display + op
+      let result = this.state.result
+      try{
+        let fixedOperation = display.split('x').join('*')
+        fixedOperation = fixedOperation.split('÷').join('/').split(',').join('.')
+        result = new String(eval(fixedOperation))
+
+      }catch(e){}
+      this.setState({ 
+        display,
+        result 
+      })
+    }
+    
   }
 
   render (){
@@ -35,14 +57,14 @@ export default class App extends React.Component {
           <View style={styles.col1}>
             { col1Buttons.map((line, ind) => <View key={ind} style={styles.line}>
               { line.map(op => <TouchableOpacity key={op} style={styles.btn} onPress={() => this.handleOp(op)}>
-                <Text style={styles.btnText}>{op}</Text>
+                <Text style={styles.btnTextCol1}>{op}</Text>
               </TouchableOpacity>  )}
             </View>
             )}
           </View>
           <View style={styles.col2}>
             { col2Buttons.map(op => <TouchableOpacity key={op} style={styles.btn} onPress={() => this.handleOp(op)}>
-              <Text style={styles.btnText}>{op}</Text>
+              <Text style={styles.btnTextCol2}>{op}</Text>
             </TouchableOpacity>  )}
           </View>
         </View>
@@ -82,7 +104,7 @@ const styles = StyleSheet.create({
   },
   col1: {
     flex: 3,
-    backgroundColor: 'gray'
+    backgroundColor: 'black'
   },
   line: {
     flex: 1,
@@ -92,16 +114,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
-  btnText: {
+  btnTextCol1: {
     fontSize: 50,
-    textAlign: 'center'
+    textAlign: 'center',
+    color:'white'
+  },
+  btnTextCol2: {
+    fontSize: 50,
+    textAlign: 'center',
+    color: 'black'
   },
   col2: {
     flex: 1,
-    backgroundColor: 'white'
-  },
-  col:{
-    flexDirection: 'column'
+    backgroundColor: '#FF8C00'
   }
 
 });
